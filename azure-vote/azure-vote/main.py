@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import os
 import random
 import redis
@@ -53,6 +53,17 @@ if app.config['SHOWHOST'] == "true":
 if not r.get(button1): r.set(button1,0)
 if not r.get(button2): r.set(button2,0)
 if not r.get(button4): r.set(button4,0)
+
+@app.route('/votes')
+def get_votes():
+    vote1 = int(r.get(button1) or 0)
+    vote2 = int(r.get(button2) or 0)
+    vote4 = int(r.get(button4) or 0)
+
+    print(f'Votes: Cat={vote1}, Dog={vote2}, Boa={vote4}')
+
+    return jsonify({'cat': vote1, 'dog': vote2, 'boa': vote4})
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
